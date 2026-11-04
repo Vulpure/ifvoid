@@ -1,5 +1,7 @@
 # 若虚科技官网
 
+更新日期：2026-11-04
+
 Astro 构建的中英文静态官网，目标域名为 https://ifvoid.cn/。提供五类服务、15 个分项、邮件联系和复制邮箱。无需在线 Node.js 服务或数据库。
 
 ## 本地使用
@@ -36,19 +38,21 @@ npm run preview  # 本地预览已构建的 dist，默认端口 4321
 
 ## GitHub Pages 与 Cloudflare
 
-当前交付为本地开发成果与部署配置，尚未创建远程仓库、实际运行 GitHub Actions 或绑定域名。
+公开源码仓库：[Vulpure/ifvoid](https://github.com/Vulpure/ifvoid)。GitHub Pages 使用 GitHub Actions 自动检查、构建和部署，当前访问地址为 https://vulpure.github.io/ifvoid/ 。自定义域名 ifvoid.cn 及 Cloudflare DNS/CDN 留待后续接入。
+
+工作流通过 `actions/configure-pages` 读取实际发布地址，以 `SITE_ORIGIN` 和 `SITE_BASE_PATH` 传入构建，页面链接、资源、语言切换、404、canonical 和站点地图均随地址调整。本地构建默认仍使用 ifvoid.cn 根路径；以后在仓库 Pages 中绑定 ifvoid.cn 后，重新运行工作流即可切换到根域名。
 
 1. 将本目录源码放入选定的 GitHub 仓库，主分支使用 `main`；使用 GitHub Free Pages 时需满足其仓库与用途要求。
 
    公开仓库中的源码和 docs 也可被访问；“内部参考”表示不在网页正文展示，不是仓库访问权限设置。
 2. 在账户或组织中验证自定义域名所有权；在仓库 Settings → Pages 中选择 GitHub Actions，并将自定义域名设置为 `ifvoid.cn`。
 3. `.github/workflows/deploy.yml` 在 PR 中执行检查与构建；合并或推送至 main 后上传 dist 并部署到 Pages。工作流不需要个人访问令牌。
-4. 按 GitHub 官方自定义域名文档配置 Cloudflare DNS。现有配置面向自定义根域名，不能直接作为 `/仓库名/` 子路径站点使用；尚未绑定域名时使用本地预览，或同步调整站点路径配置。
+4. 按 GitHub 官方自定义域名文档配置 Cloudflare DNS。尚未绑定域名时，通过 GitHub Pages 默认地址访问；绑定域名后重新部署，工作流会自动适配根域名路径。
 5. 先检查 GitHub Pages 源站域名与 HTTPS 证书，再启用 Cloudflare 代理及 Full (strict)。统一根域名与 www，验证 HTTP→HTTPS 和重定向没有循环。
 6. 静态带指纹资源使用较长缓存；HTML 按较短缓存策略处理，更新后按需清理。Cloudflare 规则由账户侧配置，代码不会自动修改 DNS、邮箱 MX 或缓存规则。
 7. 发布后检查中文、英文、五类服务详情、404、站点地图、邮件链接、语言切换及国内实际访问情况。
 
-`public/CNAME` 保留目标域名标记，GitHub Actions 部署时仍需在仓库 Pages 设置中配置自定义域名。`astro.config.mjs` 与 `src/data/site.ts` 的生产地址应保持一致。
+`public/CNAME` 保留目标域名标记，GitHub Actions 会忽略该文件，自定义域名必须在仓库 Pages 设置中配置。`astro.config.mjs` 与 `src/data/site.ts` 共用构建环境中的站点地址与路径变量。
 
 GitHub Pages 有商业用途限制；正式上线前按实际用途核对。Cloudflare 免费方案不含中国大陆节点，不能据此保证国内速度。域名续费和邮箱服务独立于静态托管，本项目不包含邮箱开通或收发验证。
 

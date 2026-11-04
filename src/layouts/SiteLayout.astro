@@ -1,6 +1,6 @@
 ---
 import { company, type Language } from '../data/content';
-import { labels, origin, homePath, servicePath, platforms, platformUrl } from '../data/site';
+import { labels, origin, basePath, homePath, servicePath, platforms, platformUrl } from '../data/site';
 import Contact from '../components/Contact.astro';
 import Arrow from '../components/Arrow.astro';
 import BrandMoon from '../components/BrandMoon.astro';
@@ -14,7 +14,7 @@ const counterpart = slug ? servicePath(lang === 'zh' ? 'en' : 'zh', slug) : home
 const canonical = new URL(path, origin).href;
 const structuredData = {
   '@context': 'https://schema.org', '@type': 'Organization', name: company.name,
-  url: origin, email: company.email, description: company.overview[lang],
+  url: new URL(homePath('zh'), origin).href, email: company.email, description: company.overview[lang],
   ...(platforms.some(platform => platformUrl(platform.url)) ? { sameAs: platforms.map(platform => platformUrl(platform.url)).filter(Boolean) } : {}),
 };
 ---
@@ -26,18 +26,18 @@ const structuredData = {
     <meta name="theme-color" content="#f2f6f5" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={`${basePath}/favicon.svg`} type="image/svg+xml" />
     {notFound ? <meta name="robots" content="noindex" /> : <>
       <link rel="canonical" href={canonical} />
-      <link rel="alternate" hreflang="zh-CN" href={new URL(slug ? servicePath('zh', slug) : '/', origin).href} />
-      <link rel="alternate" hreflang="en" href={new URL(slug ? servicePath('en', slug) : '/en/', origin).href} />
-      <link rel="alternate" hreflang="x-default" href={new URL(slug ? servicePath('zh', slug) : '/', origin).href} />
+      <link rel="alternate" hreflang="zh-CN" href={new URL(slug ? servicePath('zh', slug) : homePath('zh'), origin).href} />
+      <link rel="alternate" hreflang="en" href={new URL(slug ? servicePath('en', slug) : homePath('en'), origin).href} />
+      <link rel="alternate" hreflang="x-default" href={new URL(slug ? servicePath('zh', slug) : homePath('zh'), origin).href} />
     </>}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="若虚科技 · IFVOID" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={notFound ? `${origin}/404.html` : canonical} />
+    <meta property="og:url" content={notFound ? `${origin}${basePath}/404.html` : canonical} />
     <meta property="og:locale" content={lang === 'zh' ? 'zh_CN' : 'en_US'} />
     <script type="application/ld+json" set:html={JSON.stringify(structuredData).replaceAll('<', '\\u003c')} />
   </head>

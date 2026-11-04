@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 import { company } from '../src/data/content.ts';
-import { platforms, platformUrl } from '../src/data/site.ts';
+import { platforms, platformUrl, origin, basePath } from '../src/data/site.ts';
 const root = fileURLToPath(new URL('../dist/', import.meta.url));
 const paths = ['/', '/en/', ...company.services.flatMap(service => [`/services/${service.slug}/`, `/en/services/${service.slug}/`])];
 let links = 0;
@@ -21,14 +21,15 @@ for (const path of [...paths, '/404.html']) {
   if (disabledPlatforms === platforms.length) assert(!html.includes('class="platforms"'), `${path} 不应展示空的平台区域`);
   if (path !== '/404.html') {
     assert.equal((html.match(/rel="canonical"/g) || []).length, 1);
-    assert(html.includes(`href="https://ifvoid.cn${path}"`));
+    assert(html.includes(`href="${origin}${basePath}${path}"`));
     assert(html.includes('hreflang="zh-CN"') && html.includes('hreflang="en"'));
     assert(html.includes(`lang="${path.startsWith('/en/') ? 'en' : 'zh-CN'}"`));
   }
   for (const match of html.matchAll(/(?:href|src)="([^"#]+)(?:#[^"]*)?"/g)) {
     const value = match[1];
     if (!value.startsWith('/')) continue;
-    const target = value.split('?')[0];
+    assert(value.startsWith(`${basePath}/`), `${path} 内部资源缺少站点前缀：${value}`);
+    const target = value.split('?')[0].slice(basePath.length);
     assert(existsSync(join(root, target.endsWith('/') ? `${target}index.html` : target)), `${path} 存在无效内部资源：${value}`);
     links++;
   }
@@ -44,7 +45,7 @@ for (const service of company.services) {
 const sitemap = readFileSync(join(root, 'sitemap.xml'), 'utf8');
 assert.equal((sitemap.match(/<url>/g) || []).length, 12);
 assert.equal(readFileSync(join(root, 'CNAME'), 'utf8').trim(), company.domain);
-assert(readFileSync(join(root, 'robots.txt'), 'utf8').includes('https://ifvoid.cn/sitemap.xml'));
+assert(readFileSync(join(root, 'robots.txt'), 'utf8').includes(`${origin}${basePath}/sitemap.xml`));
 const files = [];
 function walk(directory) { for (const name of readdirSync(directory)) { const path = join(directory, name); statSync(path).isDirectory() ? walk(path) : files.push(path); } }
 walk(root);

@@ -1,7 +1,8 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 import Arrow from '../components/Arrow.astro';
+import { homePath } from '../data/site';
 ---
 <SiteLayout lang="zh" title="页面未找到 · 若虚科技" description="返回若虚科技首页，了解人工智能服务。" notFound>
-  <section class="not-found wrap"><span class="eyebrow">PAGE NOT FOUND / 404</span><h1>没有找到这个页面。</h1><p>页面可能已移动，或地址输入有误。<br/>The page may have moved, or the address may be incorrect.</p><div class="hero-actions"><a class="button primary" href="/">返回中文首页<Arrow direction="right"/></a><a class="text-link" href="/en/">English home<Arrow/></a></div></section>
+  <section class="not-found wrap"><span class="eyebrow">PAGE NOT FOUND / 404</span><h1>没有找到这个页面。</h1><p>页面可能已移动，或地址输入有误。<br/>The page may have moved, or the address may be incorrect.</p><div class="hero-actions"><a class="button primary" href={homePath('zh')}>返回中文首页<Arrow direction="right"/></a><a class="text-link" href={homePath('en')}>English home<Arrow/></a></div></section>
 </SiteLayout>

@@ -1,5 +1,6 @@
 import type { Language } from './content';
-export const origin = 'https://ifvoid.cn';
+export const origin = process.env.SITE_ORIGIN || 'https://ifvoid.cn';
+export const basePath = (process.env.SITE_BASE_PATH || '').replace(/\/$/, '');
 export const platforms: { id: string; label: Record<Language, string>; url: string | null }[] = [
   { id: 'github', label: { zh: 'GitHub', en: 'GitHub' }, url: null },
   { id: 'wechat', label: { zh: '微信公众号', en: 'WeChat' }, url: null },
@@ -11,7 +12,7 @@ export function platformUrl(value: string | null): string | null {
   try { const url = new URL(value); return url.protocol === 'https:' && !url.username && !url.password ? url.href : null; }
   catch { return null; }
 }
-export const homePath = (lang: Language) => lang === 'zh' ? '/' : '/en/';
+export const homePath = (lang: Language) => `${basePath}${lang === 'zh' ? '/' : '/en/'}`;
 export const servicePath = (lang: Language, slug: string) => `${homePath(lang)}services/${slug}/`;
 export const labels = {
   zh: {
