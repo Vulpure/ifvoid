@@ -1,0 +1,81 @@
+---
+import { company, type Language } from '../data/content';
+import { labels, origin, homePath, servicePath, platforms, platformUrl } from '../data/site';
+import Contact from '../components/Contact.astro';
+import Arrow from '../components/Arrow.astro';
+import BrandMoon from '../components/BrandMoon.astro';
+import '../styles/global.css';
+interface Props { lang: Language; title: string; description: string; slug?: string; notFound?: boolean }
+const { lang, title, description, slug, notFound = false } = Astro.props;
+const t = labels[lang];
+const home = homePath(lang);
+const path = slug ? servicePath(lang, slug) : home;
+const counterpart = slug ? servicePath(lang === 'zh' ? 'en' : 'zh', slug) : homePath(lang === 'zh' ? 'en' : 'zh');
+const canonical = new URL(path, origin).href;
+const structuredData = {
+  '@context': 'https://schema.org', '@type': 'Organization', name: company.name,
+  url: origin, email: company.email, description: company.overview[lang],
+  ...(platforms.some(platform => platformUrl(platform.url)) ? { sameAs: platforms.map(platform => platformUrl(platform.url)).filter(Boolean) } : {}),
+};
+---
+<!doctype html>
+<html lang={lang === 'zh' ? 'zh-CN' : 'en'}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f2f6f5" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {notFound ? <meta name="robots" content="noindex" /> : <>
+      <link rel="canonical" href={canonical} />
+      <link rel="alternate" hreflang="zh-CN" href={new URL(slug ? servicePath('zh', slug) : '/', origin).href} />
+      <link rel="alternate" hreflang="en" href={new URL(slug ? servicePath('en', slug) : '/en/', origin).href} />
+      <link rel="alternate" hreflang="x-default" href={new URL(slug ? servicePath('zh', slug) : '/', origin).href} />
+    </>}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="若虚科技 · IFVOID" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={notFound ? `${origin}/404.html` : canonical} />
+    <meta property="og:locale" content={lang === 'zh' ? 'zh_CN' : 'en_US'} />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData).replaceAll('<', '\\u003c')} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t.skip}</a>
+    <header class="site-header wrap">
+      <a class="wordmark" href={home} aria-label={lang === 'zh' ? '若虚科技首页' : 'Ifvoid home'}><span class="brand-mark"><BrandMoon /></span><span class="brand-cn">若虚科技</span><span class="brand-divider"></span><span class="brand-en">IFVOID</span></a>
+      <nav class="desktop-nav" aria-label={lang === 'zh' ? '主导航' : 'Main navigation'}>
+        {company.services.map(service => <a class="service-nav-link" href={servicePath(lang, service.slug)} aria-current={slug === service.slug ? 'page' : undefined}>{service.title[lang]}</a>)}
+        <a href={`${home}#about`}>{t.about}</a>
+        <a class="language-link" href={counterpart} lang={lang === 'zh' ? 'en' : 'zh-CN'} aria-label={t.switchLabel}>{t.switch}</a>
+        <a class="header-contact" href={`${home}#contact`}>{t.contact}<Arrow /></a>
+      </nav>
+      <div class="mobile-controls"><a class="language-link" href={counterpart} aria-label={t.switchLabel}>{t.switch}</a><details class="mobile-menu"><summary aria-label={lang === 'zh' ? '展开导航菜单' : 'Open navigation'}><span></span><span></span></summary><nav aria-label={lang === 'zh' ? '移动导航' : 'Mobile navigation'}>{company.services.map(service => <a href={servicePath(lang, service.slug)}><span class="mono">{service.number}</span>{service.title[lang]}<Arrow /></a>)}<a href={`${home}#about`}>{t.about}</a><a href={`${home}#contact`}>{t.contact}</a></nav></details></div>
+    </header>
+    <main id="main" tabindex="-1"><slot /></main>
+    {!notFound && <div class="wrap"><Contact lang={lang}/></div>}
+    <footer class="site-footer wrap"><a class="footer-brand" href={home}>IFVOID<span>{company.name}</span></a><span>{t.footer}</span><span class="copyright">© {new Date().getUTCFullYear()} {company.name}</span><a class="back-top" href="#main">{lang === 'zh' ? '回到顶部' : 'Back to top'}<span aria-hidden="true">↑</span></a></footer>
+    <script>
+      document.querySelectorAll<HTMLButtonElement>('[data-copy-email]').forEach(button => {
+        button.addEventListener('click', async () => {
+          const feedback = button.parentElement?.querySelector<HTMLElement>('.copy-feedback');
+          if (!feedback) return;
+          try {
+            await navigator.clipboard.writeText(button.dataset.copyEmail ?? '');
+            feedback.textContent = button.dataset.copySuccess ?? '';
+          } catch { feedback.textContent = button.dataset.copyError ?? ''; }
+        });
+      });
+      const menus = [...document.querySelectorAll<HTMLDetailsElement>('.mobile-menu')];
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') menus.filter(menu => menu.open).forEach(menu => { menu.open = false; menu.querySelector('summary')?.focus(); });
+      });
+      document.addEventListener('click', event => {
+        if (!(event.target instanceof Node)) return;
+        menus.forEach(menu => { if (!menu.contains(event.target as Node)) menu.open = false; });
+      });
+      menus.forEach(menu => menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => { menu.open = false; })));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { company, type Language } from '../data/content';
+import { labels, servicePath } from '../data/site';
+import HeroArt from './HeroArt.astro';
+import ServiceGlyph from './ServiceGlyph.astro';
+import Arrow from './Arrow.astro';
+interface Props { lang: Language }
+const { lang } = Astro.props;
+const t = labels[lang];
+---
+<SiteLayout lang={lang} title={lang === 'zh' ? '若虚科技 · IFVOID｜人工智能服务集成商' : 'IFVOID · AI Services Integrator'} description={company.overview[lang]}>
+  <section class="hero wrap" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="status-dot"></span>AI SERVICES INTEGRATOR</div>
+      <h1 id="hero-title">{lang === 'zh' ? <>人工智能<br/><span>服务集成商。</span></> : <>AI services.<br/><span>Connected.</span></>}</h1>
+      <p class="hero-description">{lang === 'zh' ? '整合计算资源、模型能力与工程实施，连接先进技术与实际需求。' : 'Computing resources, model capabilities, and engineering expertise, connected to real-world needs.'}</p>
+      <div class="hero-actions"><a class="button primary" href="#services">{t.explore}<Arrow direction="right"/></a><a class="text-link" href={`mailto:${company.email}`}>{t.email}<Arrow/></a></div>
+      <div class="hero-note"><span class="mono">01 — 05</span><span>{lang === 'zh' ? '从计算基础，到应用与创造。' : 'From compute to applications and creation.'}</span></div>
+    </div>
+    <HeroArt />
+  </section>
+  <div class="service-ribbon"><div class="wrap">{company.services.map(service => <a href={servicePath(lang, service.slug)}><span class="ribbon-dot"></span>{lang === 'zh' ? service.title.zh : service.nav}<span class="ribbon-en mono">{service.nav}</span></a>)}</div></div>
+  <section id="services" class="services-section wrap" aria-labelledby="services-title">
+    <div class="section-kicker"><span>OUR SERVICES</span><span>{lang === 'zh' ? '服务体系' : 'What we do'}</span></div>
+    <div class="section-heading"><h2 id="services-title">{lang === 'zh' ? <>五类能力，<br/>回应不同需求。</> : <>Five capabilities.<br/>Practical possibilities.</>}</h2><p>{lang === 'zh' ? '服务可以独立提供，也可以围绕具体需求组合，从计算与模型，到业务应用、内容创作及安全治理。' : 'Engage a single service or combine capabilities around a specific need, from compute and models to applications, creative work, and governance.'}</p></div>
+    <div class="service-list">{company.services.map(service => <article class="service-row">
+      <span class="service-number mono">{service.number}</span>
+      <a class="service-row-title" href={servicePath(lang, service.slug)}><h3>{service.title[lang]}</h3><span class="service-fullname">{service.fullName}</span></a>
+      <div class="service-row-body"><p>{service.introduction[lang]}</p><div class="service-tags">{service.items.map(item => <span>{item.name[lang]}</span>)}</div><a class="text-link row-link" href={servicePath(lang, service.slug)}>{t.details}<Arrow direction="right"/></a></div>
+      <a class="service-art-link" href={servicePath(lang, service.slug)} aria-label={`${t.details} · ${service.title[lang]}`}><ServiceGlyph slug={service.slug}/><span class="round-arrow"><Arrow/></span></a>
+    </article>)}</div>
+  </section>
+  <section class="about-section" id="about" aria-labelledby="about-title"><div class="wrap about-grid">
+    <div><div class="section-kicker"><span>ABOUT IFVOID</span><span>{lang === 'zh' ? '关于若虚' : 'Who we are'}</span></div><h2 id="about-title">{lang === 'zh' ? <>连接技术，<br/>也连接需求。</> : <>Technology,<br/>with context.</>}</h2><p class="about-caption mono">COMPUTE / MODELS / ENGINEERING<br/>CREATION / GOVERNANCE</p></div>
+    <div class="about-content"><p>{company.overview[lang]}</p><div class="about-connection"><span>{lang === 'zh' ? '计算资源' : 'Compute resources'}</span><span aria-hidden="true">↔</span><span>{lang === 'zh' ? '模型能力' : 'Model capabilities'}</span><span aria-hidden="true">↔</span><span>{lang === 'zh' ? '实际场景' : 'Practical applications'}</span></div><a class="text-link" href="#contact">{lang === 'zh' ? '与我们交流' : 'Let’s talk'}<Arrow/></a></div>
+  </div></section>
+</SiteLayout>

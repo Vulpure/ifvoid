@@ -1,0 +1,18 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import ServiceGlyph from './ServiceGlyph.astro';
+import Arrow from './Arrow.astro';
+import { company, type Language, type Service } from '../data/content';
+import { labels, homePath, servicePath } from '../data/site';
+interface Props { lang: Language; service: Service }
+const { lang, service } = Astro.props;
+const t = labels[lang];
+---
+<SiteLayout lang={lang} slug={service.slug} title={`${lang === 'zh' ? service.title.zh : service.fullName}｜若虚科技 · IFVOID`} description={service.introduction[lang]}>
+  <div class="wrap service-detail">
+    <nav class="breadcrumbs" aria-label={lang === 'zh' ? '面包屑导航' : 'Breadcrumb'}><a href={homePath(lang)}>{lang === 'zh' ? '首页' : 'Home'}</a><span aria-hidden="true">/</span><a href={`${homePath(lang)}#services`}>{t.all}</a><span aria-hidden="true">/</span><span aria-current="page">{service.title[lang]}</span></nav>
+    <section class="detail-hero"><div><div class="eyebrow"><span class="status-dot"></span>SERVICE {service.number} / 05</div><h1>{service.title[lang]}</h1><p class="detail-fullname">{service.fullName}</p><p class="detail-intro">{service.introduction[lang]}</p><a class="button primary" href={`mailto:${company.email}`}>{t.email}<Arrow/></a></div><div class={`detail-art art-${service.slug}`}><span class="art-coordinate mono">IFVOID / {service.nav.toUpperCase()}</span><ServiceGlyph slug={service.slug} large/><span class="art-coordinate mono">{service.number} — CONNECTED CAPABILITIES</span></div></section>
+    <section class="detail-scope" aria-labelledby="scope-title"><div class="section-kicker"><span>SERVICE SCOPE</span><span>{t.serviceScope}</span></div><h2 id="scope-title">{lang === 'zh' ? '围绕需求，展开服务内容。' : 'Service scope, clearly defined.'}</h2><div class="scope-grid">{service.items.map((item, index) => <article class="scope-item"><span class="scope-number mono">{service.number}.{String(index + 1).padStart(2, '0')}</span><h3>{item.name[lang]}</h3>{lang === 'zh' && <p class="scope-english">{item.name.en}</p>}<p>{item.description[lang]}</p></article>)}</div></section>
+    <section class="related-services" aria-labelledby="related-title"><h2 id="related-title">{t.other}</h2><div>{company.services.filter(other => other.slug !== service.slug).map(other => <a href={servicePath(lang, other.slug)}><span class="mono">{other.number}</span><span>{other.title[lang]}</span><Arrow/></a>)}</div></section>
+  </div>
+</SiteLayout>

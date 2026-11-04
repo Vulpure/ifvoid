@@ -1,0 +1,26 @@
+---
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+---
+<div class:list={['hero-art', { compact }]} aria-hidden="true">
+  <svg viewBox="0 0 680 640" fill="none">
+    <defs>
+      <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.8" fill="var(--grid-dot)" /></pattern>
+      <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><path d="M0 0v7" stroke="var(--lotus)" stroke-width="1" /></pattern>
+    </defs>
+    <rect x="34" y="32" width="612" height="576" fill="url(#dots)" />
+    <path d="M340 42v556M42 320h596" stroke="var(--grid-line)" stroke-width="1" />
+    <circle cx="340" cy="320" r="218" stroke="var(--grid-dot)" stroke-dasharray="2 8" />
+    <circle cx="340" cy="320" r="178" stroke="var(--grid-line)" />
+    <ellipse cx="340" cy="320" rx="250" ry="112" transform="rotate(-34 340 320)" stroke="var(--river)" stroke-opacity="0.65" />
+    <path d="M340 155a165 165 0 1 1-143 247l58-33a98 98 0 1 0 85-147v-67Z" fill="var(--accent)" fill-opacity="0.9" />
+    <path d="M197 402a165 165 0 0 1 143-247v67a98 98 0 0 0-85 147l-58 33Z" fill="url(#hatch)" />
+    <circle cx="340" cy="320" r="98" fill="var(--paper)" />
+    <circle cx="340" cy="320" r="72" stroke="var(--grid-dot)" />
+    <path d="M326 320h28M340 306v28" stroke="var(--accent)" stroke-width="1.5" />
+    <circle class="orbit-dot" cx="518" cy="320" r="6" fill="var(--moon)" />
+    <path d="M154 461c65-33 123-33 187 0s122 33 186 0 99-33 131-16M140 486c66-27 126-27 190 0s119 27 184 0 103-27 139-13" stroke="var(--river)" stroke-width="2" stroke-linecap="round" stroke-opacity="0.75" />
+    <g stroke="var(--ink)" stroke-width="1"><path d="M204 182 140 118H62M498 238l68-47h70M478 448l67 62h91M218 444l-72 65H62M340 102V55" /><circle cx="204" cy="182" r="3" fill="var(--ink)" /><circle cx="498" cy="238" r="3" fill="var(--ink)" /><circle cx="478" cy="448" r="3" fill="var(--ink)" /><circle cx="218" cy="444" r="3" fill="var(--ink)" /><circle cx="340" cy="102" r="3" fill="var(--ink)" /></g>
+    <g fill="var(--muted)" font-family="monospace" font-size="10" letter-spacing="1.2"><text x="62" y="106">01 / COMPUTE</text><text x="510" y="179">02 / MODELS</text><text x="472" y="534">03 / ENGINEERING</text><text x="62" y="533">04 / CREATION</text><text x="355" y="59">05 / GOVERNANCE</text><text x="42" y="595">IFVOID — MOON / RIVER / CONNECTED CAPABILITIES</text></g>
+  </svg>
+</div>

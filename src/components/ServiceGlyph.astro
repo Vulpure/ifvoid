@@ -1,0 +1,11 @@
+---
+interface Props { slug: string; large?: boolean }
+const { slug, large = false } = Astro.props;
+---
+<svg class:list={['service-glyph', { large }]} viewBox="0 0 100 100" fill="none" aria-hidden="true">
+  {slug === 'compute' && <g stroke="currentColor" stroke-width="1.2"><path d="m50 10 37 21-37 21L13 31 50 10Z"/><path d="m13 43 37 21 37-21M13 55l37 21 37-21M13 67l37 21 37-21"/><path d="M50 52v36"/></g>}
+  {slug === 'models' && <g stroke="currentColor" stroke-width="1.2"><circle cx="50" cy="50" r="35"/><ellipse cx="50" cy="50" rx="17" ry="35"/><ellipse cx="50" cy="50" rx="35" ry="14"/><path d="M15 50h70M50 15v70"/><circle cx="50" cy="50" r="4" fill="currentColor"/></g>}
+  {slug === 'engineering' && <g stroke="currentColor" stroke-width="1.2"><rect x="12" y="12" width="22" height="22"/><rect x="66" y="12" width="22" height="22"/><rect x="39" y="66" width="22" height="22"/><path d="M23 34v16h54V34M50 50v16"/><circle cx="50" cy="50" r="4" fill="currentColor"/></g>}
+  {slug === 'creation' && <g stroke="currentColor" stroke-width="1.2"><path d="M50 7v86M7 50h86M20 20l60 60M20 80l60-60"/><path d="M50 7c0 27 16 43 43 43-27 0-43 16-43 43 0-27-16-43-43-43 27 0 43-16 43-43Z"/><circle cx="50" cy="50" r="20"/></g>}
+  {slug === 'governance' && <g stroke="currentColor" stroke-width="1.2"><path d="m50 9 34 14v28c0 19-16 31-34 40C32 82 16 70 16 51V23L50 9Z"/><path d="m50 23 22 9v19c0 12-9 21-22 29-13-8-22-17-22-29V32l22-9Z"/><path d="m37 50 9 9 18-20"/></g>}
+</svg>

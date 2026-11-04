@@ -1,0 +1,24 @@
+---
+import { company, type Language } from '../data/content';
+import { labels, platforms, platformUrl } from '../data/site';
+import Arrow from './Arrow.astro';
+interface Props { lang: Language }
+const { lang } = Astro.props;
+const t = labels[lang];
+const activePlatforms = platforms.map(platform => ({ ...platform, href: platformUrl(platform.url) })).filter(platform => platform.href);
+---
+<section class="contact-section" id="contact" aria-labelledby="contact-title">
+  <div class="section-kicker"><span>CONTACT</span><span>{lang === 'zh' ? '联系若虚' : 'Let’s connect'}</span></div>
+  <div class="contact-grid">
+    <div><h2 id="contact-title">{t.contactTitle}</h2><p>{t.contactDesc}</p></div>
+    <div class="contact-action">
+      <a class="email-link" href={`mailto:${company.email}`}>{company.email}<Arrow /></a>
+      <button class="copy-button" type="button" data-copy-email={company.email} data-copy-success={t.copied} data-copy-error={t.copyFail}><svg viewBox="0 0 20 20" fill="none" width="16" height="16" aria-hidden="true"><rect x="6" y="6" width="10" height="11" rx="1" stroke="currentColor"/><path d="M12 6V3H3v10h3" stroke="currentColor"/></svg><span>{t.copy}</span></button>
+      <span class="copy-feedback" role="status" aria-live="polite"></span>
+    </div>
+  </div>
+  {activePlatforms.length > 0 && <div class="platforms" aria-label={t.social}>
+    <span class="platform-heading">{t.social}</span>
+    {activePlatforms.map(platform => <a href={platform.href!} target="_blank" rel="noopener noreferrer">{platform.label[lang]}<Arrow /></a>)}
+  </div>}
+</section>
